@@ -55,3 +55,10 @@ bool Check_Input(string Input) {
     }
     return answer;
 }
+
+void Make_Tape(string Input, vector <Cell>& Tape) {
+    Cell Temp_cell;
+    Tape.push_back(Temp_cell);
+
+    Tape.push_back(Temp_cell);
+}
