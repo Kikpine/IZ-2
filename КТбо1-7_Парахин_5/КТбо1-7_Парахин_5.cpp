@@ -20,36 +20,33 @@ typedef struct Cell {
 
 bool Check_Input(string Input);
 void Make_Tape(string Input, vector <Cell>& Tape);
+void Print_Tape(vector <Cell>& Tape);
 
 int main()
 {
     setlocale(LC_ALL, "Russian");
-    
+
     string Input_string;
     vector <Cell> Tape;
-
+    
     bool flag = 1;
     do {
         cout << "Введите входные данные: ";
         cin >> Input_string;
 
-        if (Check_Input(Input_string)) {
+        if (Check_Input(Input_string) == 1) {
             Make_Tape(Input_string, Tape);
-
-            for (auto it = Tape.begin(); it != Tape.end(); it++) {
-                cout << (*it).content << ' ';
-            }
-            cout << endl;
-            for (auto it = Tape.begin(); it != Tape.end(); it++) {
-                cout << (*it).knob << ' ';
-            }
-            cout << endl;
+            
+            cout << "Начальная конфигурация машины:" << endl;
+            Print_Tape(Tape);   // Print start position
 
         }
         else {
             cout << "Неправильная строка" << endl;
         }
 
+        Tape.clear();
+        
         cout << "Хотите продолжить? ";
         cin >> flag;
     } while (flag == 1);
@@ -69,11 +66,10 @@ bool Check_Input(string Input) {
 
 void Make_Tape(string Input, vector <Cell>& Tape) {
     Cell Temp_cell;
-    Temp_cell.knob = 1;
     Tape.push_back(Temp_cell);
 
     for (auto it = Input.begin(); it != Input.end(); it++) {
-        Temp_cell.content = *it;
+        Temp_cell.content = (*it);
         Temp_cell.knob = 0;
         Tape.push_back(Temp_cell);
     }
@@ -81,4 +77,22 @@ void Make_Tape(string Input, vector <Cell>& Tape) {
     Temp_cell.content = 'X';
     Temp_cell.knob = 0;
     Tape.push_back(Temp_cell);
+    
+    Tape[1].knob = 1;
+}
+
+void Print_Tape(vector <Cell> &Tape) {
+    for (auto it = Tape.begin(); it != Tape.end(); it++) {
+        cout << (*it).content;
+    }
+    cout << endl;
+    for (auto it = Tape.begin(); it != Tape.end(); it++) {
+        if ((*it).knob == true) {
+            cout << '^';
+        }
+        else {
+            cout << ' ';
+        }
+    }
+    cout << endl;
 }
