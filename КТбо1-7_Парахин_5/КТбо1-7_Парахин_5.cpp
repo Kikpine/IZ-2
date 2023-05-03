@@ -13,21 +13,29 @@ XX.05.2023
 #include <set>
 using namespace std;
 
-typedef struct Cell {
+typedef struct Tape_Cell {
     char content = 'Х';
     bool knob = false;
-} Cell;
+} Tape_Cell;
+
+typedef struct Table_Cell {
+    char new_symbol;
+    char direction;
+    int condition;
+} Table_Cell;
 
 bool Check_Input(string Input);
-void Make_Tape(string Input, vector <Cell>& Tape);
-void Print_Tape(vector <Cell>& Tape);
+void Make_Tape(string Input, vector <Tape_Cell>& Tape);
+void Print_Tape(vector <Tape_Cell>& Tape);
+void Make_Table(map<char, vector <Table_Cell>>& Table);
 
 int main()
 {
     setlocale(LC_ALL, "Russian");
 
     string Input_string;
-    vector <Cell> Tape;
+    vector <Tape_Cell> Tape;
+    map<char, vector <Table_Cell>> Table;
     
     bool flag = 1;
     do {
@@ -40,6 +48,7 @@ int main()
             cout << "Начальная конфигурация машины:" << endl;
             Print_Tape(Tape);   // Print start position
 
+            Make_Table(Table);
         }
         else {
             cout << "Неправильная строка" << endl;
@@ -64,8 +73,8 @@ bool Check_Input(string Input) {
     return answer;
 }
 
-void Make_Tape(string Input, vector <Cell>& Tape) {
-    Cell Temp_cell;
+void Make_Tape(string Input, vector <Tape_Cell>& Tape) {
+    Tape_Cell Temp_cell;
     Tape.push_back(Temp_cell);
 
     for (auto it = Input.begin(); it != Input.end(); it++) {
@@ -81,7 +90,7 @@ void Make_Tape(string Input, vector <Cell>& Tape) {
     Tape[1].knob = 1;
 }
 
-void Print_Tape(vector <Cell> &Tape) {
+void Print_Tape(vector <Tape_Cell> &Tape) {
     for (auto it = Tape.begin(); it != Tape.end(); it++) {
         cout << (*it).content;
     }
@@ -95,4 +104,27 @@ void Print_Tape(vector <Cell> &Tape) {
         }
     }
     cout << endl;
+}
+
+void Make_Table(map<char,vector <Table_Cell>>&Table) {
+    ifstream fin("Table.txt");
+    int table_symbols, table_conditions;
+    fin >> table_symbols >> table_conditions;
+
+    Table_Cell Temp_cell;
+
+    char symbol;
+    for (int i = 0; i < table_symbols; i++) {
+        fin >> symbol;
+
+        Temp_cell.new_symbol = '0';
+        Temp_cell.direction = '.';
+        Temp_cell.condition = -1;
+        Table[symbol].push_back(Temp_cell);
+
+        for (int j = 0; j < table_conditions; j++) {
+            fin >> Temp_cell.new_symbol >> Temp_cell.direction >> Temp_cell.condition;
+            Table[symbol].push_back(Temp_cell);
+        }
+    }
 }
