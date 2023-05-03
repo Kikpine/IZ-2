@@ -19,6 +19,7 @@ typedef struct Cell {
 } Cell;
 
 bool Check_Input(string Input);
+void Make_Tape(string Input, vector <Cell>& Tape);
 
 int main()
 {
@@ -33,6 +34,16 @@ int main()
         cin >> Input_string;
 
         if (Check_Input(Input_string)) {
+            Make_Tape(Input_string, Tape);
+
+            for (auto it = Tape.begin(); it != Tape.end(); it++) {
+                cout << (*it).content << ' ';
+            }
+            cout << endl;
+            for (auto it = Tape.begin(); it != Tape.end(); it++) {
+                cout << (*it).knob << ' ';
+            }
+            cout << endl;
 
         }
         else {
@@ -58,7 +69,16 @@ bool Check_Input(string Input) {
 
 void Make_Tape(string Input, vector <Cell>& Tape) {
     Cell Temp_cell;
+    Temp_cell.knob = 1;
     Tape.push_back(Temp_cell);
 
+    for (auto it = Input.begin(); it != Input.end(); it++) {
+        Temp_cell.content = *it;
+        Temp_cell.knob = 0;
+        Tape.push_back(Temp_cell);
+    }
+
+    Temp_cell.content = 'X';
+    Temp_cell.knob = 0;
     Tape.push_back(Temp_cell);
 }
