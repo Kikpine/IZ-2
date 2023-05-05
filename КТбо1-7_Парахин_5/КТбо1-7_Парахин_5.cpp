@@ -14,7 +14,7 @@ XX.05.2023
 using namespace std;
 
 typedef struct Tape_Cell {
-    char content = 'Х';
+    char symbol = 'X';
     bool knob = false;
 } Tape_Cell;
 
@@ -28,6 +28,7 @@ bool Check_Input(string Input);
 void Make_Tape(string Input, vector <Tape_Cell>& Tape);
 void Print_Tape(vector <Tape_Cell>& Tape);
 void Make_Table(map<char, vector <Table_Cell>>& Table);
+void Transition(int& condition, Tape_Cell*& knob, vector <Tape_Cell>& Tape, map<char, vector <Table_Cell>>& Table);
 
 int main()
 {
@@ -37,29 +38,40 @@ int main()
     vector <Tape_Cell> Tape;
     map<char, vector <Table_Cell>> Table;
     
-    bool flag = 1;
+    int flag = 1;
     do {
         cout << "Введите входные данные: ";
         cin >> Input_string;
-
+        cout << endl;
         if (Check_Input(Input_string) == 1) {
             Make_Tape(Input_string, Tape);
             
             cout << "Начальная конфигурация машины:" << endl;
-            Print_Tape(Tape);   // Print start position
+            Print_Tape(Tape);
 
             Make_Table(Table);
+
+            Tape_Cell* knob = &Tape[1];
+            int condition = 1;
+
+            while (condition != 0) {
+                Transition(condition, knob, Tape, Table);
+                Print_Tape(Tape);
+                cout << "Текущее состояние машины Тьюринга: " << condition << endl << endl;
+            }
         }
         else {
-            cout << "Неправильная строка" << endl;
+            cout << "Ошибка. Строка не соответствует условию. Введите целое неотрицательное двоичное число." << endl;
         }
 
         Tape.clear();
         
-        cout << "Хотите продолжить? ";
+        cout << "Хотите ввести входные данные заново или выйти из программы (1 - Ввести входные данные заново, 0 - выйти из программы): ";
         cin >> flag;
-    } while (flag == 1);
+        cout << "------------------------------------------------------------------------------------------------------------------------" << endl;
+    } while (flag != 0);
 
+    cout << "Вы вышли из программы." << endl;
     return 0;
 }
 
@@ -78,21 +90,22 @@ void Make_Tape(string Input, vector <Tape_Cell>& Tape) {
     Tape.push_back(Temp_cell);
 
     for (auto it = Input.begin(); it != Input.end(); it++) {
-        Temp_cell.content = (*it);
+        Temp_cell.symbol = (*it);
         Temp_cell.knob = 0;
         Tape.push_back(Temp_cell);
     }
 
-    Temp_cell.content = 'X';
+    Temp_cell.symbol = 'X';
     Temp_cell.knob = 0;
     Tape.push_back(Temp_cell);
     
     Tape[1].knob = 1;
+    return;
 }
 
 void Print_Tape(vector <Tape_Cell> &Tape) {
     for (auto it = Tape.begin(); it != Tape.end(); it++) {
-        cout << (*it).content;
+        cout << (*it).symbol;
     }
     cout << endl;
     for (auto it = Tape.begin(); it != Tape.end(); it++) {
@@ -104,6 +117,7 @@ void Print_Tape(vector <Tape_Cell> &Tape) {
         }
     }
     cout << endl;
+    return;
 }
 
 void Make_Table(map<char,vector <Table_Cell>>&Table) {
@@ -127,4 +141,43 @@ void Make_Table(map<char,vector <Table_Cell>>&Table) {
             Table[symbol].push_back(Temp_cell);
         }
     }
+    return;
+}
+
+void Transition(int &condition, Tape_Cell *&knob, vector <Tape_Cell>& Tape, map<char, vector <Table_Cell>>& Table){
+    int condition_old = condition;
+    char symbol_old = (*knob).symbol;
+
+    condition = Table[(*knob).symbol][condition].condition;
+
+    (*knob).symbol = Table[(*knob).symbol][condition_old].new_symbol;
+
+    (*knob).knob = 0;
+    
+    if (knob == &Tape[Tape.size() - 1] && (*knob).symbol != 'X') {
+        Tape_Cell Temp_cell;
+        Tape.push_back(Temp_cell);
+        knob = &Tape[Tape.size() - 2];
+    }
+    if (knob == &Tape[0] && (*knob).symbol != 'X') {
+        Tape_Cell Temp_cell;
+        Tape.insert(Tape.begin(), Temp_cell);
+        knob = &Tape[1];
+    }
+
+    if (Table[symbol_old][condition_old].direction == '>') {
+        knob++;
+    }
+    else if (Table[symbol_old][condition_old].direction == '<') {
+        knob--;
+    }
+
+    (*knob).knob = 1;
+
+    if (Tape[0].symbol == 'X' && Tape[1].symbol == 'X') {
+        Tape.erase(Tape.begin());
+        knob = &Tape[1];
+    }
+
+    return;
 }
