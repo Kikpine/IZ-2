@@ -42,7 +42,7 @@ bool Check_Input(string Input);
 //     Input - строка для считывания.
 //     Tape - вектор для записи.
 // Выходные данные: 
-//      Нет, так как функция типа void
+//      Нет, так как функция типа void.
 void Make_Tape(string Input, vector <Tape_Cell>& Tape);
 
 // Функция для вывода ленты машины.
@@ -52,7 +52,7 @@ void Make_Tape(string Input, vector <Tape_Cell>& Tape);
 // Входные данные: 
 //      Tape -  вектор структур для вывода ленты.
 // Выходные данные: 
-//      Нет, так как функция типа void
+//      Нет, так как функция типа void.
 void Print_Tape(vector <Tape_Cell>& Tape);
 
 // Функция инициализации системы команд.
@@ -62,7 +62,7 @@ void Print_Tape(vector <Tape_Cell>& Tape);
 // Входные данные: 
 //      Table - структура map для записи таблицы для системы команд.
 // Выходные данные: 
-//      Нет, так как функция типа void
+//      Нет, так как функция типа void.
 void Make_Table(map<char, vector <Table_Cell>>& Table);
 
 // Функция реализации одного шага работы машины.
@@ -76,18 +76,18 @@ void Make_Table(map<char, vector <Table_Cell>>& Table);
 //      Tape - лента машины. 
 //      Table - таблица системы команд.
 // Выходные данные: 
-//      Нет, так как функция типа void
+//      Нет, так как функция типа void.
 void Transition(int& condition, Tape_Cell*& knob, vector <Tape_Cell>& Tape, map<char, vector <Table_Cell>>& Table);
 
 int main()
 {
     setlocale(LC_ALL, "Russian");
 
-    // Строка для хранения входного слова
+    // Строка для хранения входного слова.
     string Input_string;
-    // Вектор структкр для реализации ленты машины
+    // Вектор структкр для реализации ленты машины.
     vector <Tape_Cell> Tape;
-    // Структура «map» для реализации хранилища команд машины Тьюринга
+    // Структура «map» для реализации хранилища команд машины Тьюринга.
     map<char, vector <Table_Cell>> Table;
     
     int flag = 1;
